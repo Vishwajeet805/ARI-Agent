@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Info, Navigation, RotateCcw, Sparkles } from "lucide-react";
+import { ChevronDown, Info, Moon, RotateCcw, Sparkles, Sun } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -12,10 +12,11 @@ import type { ActivityEntry, AppState, Plan } from "@/lib/daypilot/types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "icon", type: "image/svg+xml", href: "/ari-mark.svg" }],
     meta: [
-      { title: "DayPilot — Plan your day, one request at a time." },
+      { title: "Ari — Your day, made easier." },
       { name: "description", content: "A local demo planner that turns a request into editable steps for tasks, shopping lists, and breaks." },
-      { property: "og:title", content: "DayPilot — interactive day-planner demo" },
+      { property: "og:title", content: "Ari — interactive day-planner demo" },
       { property: "og:description", content: "Describe what you need. Review a plan for tasks, shopping lists, and breaks." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -45,10 +46,18 @@ function Index() {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [running, setRunning] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem("ari:theme") === "dark"; } catch { return false; }
+  });
   const stateRef = useRef(state);
   const runLockRef = useRef(false);
   stateRef.current = state;
   const now = useClock();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    try { localStorage.setItem("ari:theme", darkMode ? "dark" : "light"); } catch { /* Theme still applies for this session. */ }
+  }, [darkMode]);
 
   useEffect(() => {
     try {
@@ -125,7 +134,7 @@ function Index() {
             <Navigation className="size-4.5" aria-hidden />
           </span>
           <div>
-            <p className="font-display text-xl leading-none">DayPilot</p>
+            <p className="font-display text-xl leading-none tracking-tight">Ari</p>
             <p className="text-xs text-muted-foreground">Plan tasks, lists, and breaks</p>
           </div>
         </div>
@@ -143,7 +152,7 @@ function Index() {
         <h1 className="mt-1 max-w-3xl font-display text-4xl tracking-tight sm:text-5xl lg:text-6xl">
           {greeting}. <span className="text-gradient-accent">What would you like to plan?</span>
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Describe a task, shopping list, or break. DayPilot drafts editable steps; review them before running. Changes stay in this browser.</p>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Describe a task, shopping list, or break. Ari drafts editable steps; review them before running. Changes stay in this browser.</p>
         <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-muted-foreground"><span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-primary" /> 1. Describe</span><span aria-hidden className="text-border">/</span><span>2. Review</span><span aria-hidden className="text-border">/</span><span>3. Run</span></div>
       </section>
 
@@ -204,7 +213,7 @@ function HowItWorks() {
         <ChevronDown className="size-4 transition group-data-[state=open]:rotate-180" aria-hidden />
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-3 space-y-2 text-sm text-muted-foreground">
-        <p>DayPilot is a hackathon-built <strong className="text-foreground">simulated assistant</strong> for the Alexa+ track's simulated-experience path. It is not an official Alexa+ product and doesn't connect to Alexa or Amazon services.</p>
+        <p>Ari is a hackathon-built <strong className="text-foreground">simulated assistant</strong> for the Alexa+ track's simulated-experience path. It is not an official Alexa+ product and doesn't connect to Alexa or Amazon services.</p>
         <p>A deterministic rule-based planner (no AI model or network) turns supported requests into steps. Running them uses this app's tools — <code>addTask</code>, <code>createShoppingList</code>, and <code>scheduleBreak</code> — to update the dashboard.</p>
         <p>Your changes are saved in this browser only. This demo does not connect to a calendar, send reminders or notifications, or control Alexa/Amazon services.</p>
       </CollapsibleContent>
