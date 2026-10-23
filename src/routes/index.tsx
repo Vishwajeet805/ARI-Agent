@@ -130,15 +130,18 @@ function Index() {
     <div className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
       <header className="mb-9 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <Navigation className="size-4.5" aria-hidden />
+          <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm" aria-hidden="true">
+            <svg viewBox="0 0 28 28" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5.5 11.5a8.5 8.5 0 0 1 17 0" /><path d="M8.5 14a5.5 5.5 0 0 1 11 0" /><path d="M11.5 16.5a2.5 2.5 0 0 1 5 0" /><path d="M14 19v2.5" /><path d="m21.5 4 .8 1.8 1.7.7-1.7.8-.8 1.7-.7-1.7-1.8-.8 1.8-.7z" fill="currentColor" stroke="none" />
+            </svg>
           </span>
           <div>
             <p className="font-display text-xl leading-none tracking-tight">Ari</p>
             <p className="text-xs text-muted-foreground">Plan tasks, lists, and breaks</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setDarkMode((dark) => !dark)} aria-label={darkMode ? "Switch to light theme" : "Switch to dark theme"} title={darkMode ? "Switch to light theme" : "Switch to dark theme"}>{darkMode ? <Sun className="size-4" /> : <Moon className="size-4" />}<span className="hidden sm:inline">{darkMode ? "Light" : "Dark"} mode</span></Button>
           <Button variant="outline" size="sm" onClick={reset} disabled={running}><RotateCcw className="size-4" />Reset demo</Button>
           <Button size="sm" onClick={loadDemo} disabled={running} className="bg-primary text-primary-foreground hover:bg-primary/90"><Sparkles className="size-4" />Try the demo</Button>
         </div>
