@@ -56,23 +56,23 @@
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 0.75rem;
   --background: oklch(0.982 0.008 85);
   --foreground: oklch(0.24 0.045 265);
   --card: oklch(0.995 0.004 85 / 0.82);
   --card-foreground: oklch(0.24 0.045 265);
   --popover: oklch(0.995 0.004 85);
   --popover-foreground: oklch(0.24 0.045 265);
-  --primary: oklch(0.52 0.21 278);
+  --primary: oklch(0.46 0.13 190);
   --primary-foreground: oklch(0.985 0.005 280);
-  --primary-soft: oklch(0.94 0.04 280);
-  --cobalt: oklch(0.56 0.19 258);
+  --primary-soft: oklch(0.93 0.035 190);
+  --cobalt: oklch(0.58 0.12 205);
   --secondary: oklch(0.95 0.012 85);
   --secondary-foreground: oklch(0.24 0.045 265);
   --muted: oklch(0.95 0.01 85);
   --muted-foreground: oklch(0.5 0.03 265);
-  --accent: oklch(0.94 0.035 280);
-  --accent-foreground: oklch(0.3 0.12 278);
+  --accent: oklch(0.93 0.035 190);
+  --accent-foreground: oklch(0.28 0.08 190);
   --success: oklch(0.58 0.13 158);
   --success-soft: oklch(0.94 0.045 158);
   --warning: oklch(0.68 0.14 70);
@@ -81,25 +81,25 @@
   --destructive-foreground: oklch(0.985 0.005 85);
   --border: oklch(0.9 0.012 85);
   --input: oklch(0.88 0.015 85);
-  --ring: oklch(0.52 0.21 278);
-  --chart-1: oklch(0.52 0.21 278);
-  --chart-2: oklch(0.56 0.19 258);
+  --ring: oklch(0.46 0.13 190);
+  --chart-1: oklch(0.46 0.13 190);
+  --chart-2: oklch(0.58 0.12 205);
   --chart-3: oklch(0.58 0.13 158);
   --chart-4: oklch(0.68 0.14 70);
   --chart-5: oklch(0.6 0.15 20);
   --sidebar: oklch(0.98 0.008 85);
   --sidebar-foreground: oklch(0.24 0.045 265);
-  --sidebar-primary: oklch(0.52 0.21 278);
+  --sidebar-primary: oklch(0.46 0.13 190);
   --sidebar-primary-foreground: oklch(0.985 0.005 280);
-  --sidebar-accent: oklch(0.94 0.035 280);
-  --sidebar-accent-foreground: oklch(0.3 0.12 278);
+  --sidebar-accent: oklch(0.93 0.035 190);
+  --sidebar-accent-foreground: oklch(0.28 0.08 190);
   --sidebar-border: oklch(0.9 0.012 85);
-  --sidebar-ring: oklch(0.52 0.21 278);
+  --sidebar-ring: oklch(0.46 0.13 190);
 
   --gradient-accent: linear-gradient(135deg, var(--primary), var(--cobalt));
   --gradient-canvas:
-    radial-gradient(60rem 30rem at 85% -10%, oklch(0.9 0.06 280 / 0.55), transparent 60%),
-    radial-gradient(40rem 25rem at -10% 10%, oklch(0.93 0.05 250 / 0.5), transparent 60%);
+    radial-gradient(48rem 24rem at 92% -12%, oklch(0.9 0.035 190 / 0.38), transparent 62%),
+    radial-gradient(36rem 22rem at -12% 12%, oklch(0.94 0.025 75 / 0.38), transparent 62%);
   --shadow-card: 0 1px 2px oklch(0.24 0.045 265 / 0.04), 0 12px 32px -16px oklch(0.24 0.045 265 / 0.16);
   --shadow-glow: 0 10px 30px -10px color-mix(in oklab, var(--primary) 45%, transparent);
 }
@@ -188,4 +188,17 @@ textarea:focus-visible {
   .glass-card:hover {
     border-color: color-mix(in oklab, var(--primary) 24%, var(--border));
   }
+}
+
+/* Intentional visual system: warm paper, ink, and one quiet teal accent. */
+.daypilot-hero {
+  border-radius: 1.5rem;
+  border-left: 4px solid var(--primary);
+  background: linear-gradient(112deg, color-mix(in oklab, var(--card) 98%, white), color-mix(in oklab, var(--primary-soft) 34%, var(--card)));
+  box-shadow: 0 2px 4px oklch(0.24 0.045 265 / 0.04), 0 18px 42px -28px oklch(0.24 0.045 265 / 0.22);
+}
+.glass-card { border-radius: 1.25rem; backdrop-filter: blur(8px); }
+.daypilot-shell button { touch-action: manipulation; }
+@media (max-width: 640px) {
+  .daypilot-hero { border-radius: 1.125rem; }
 }
