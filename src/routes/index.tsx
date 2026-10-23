@@ -118,15 +118,15 @@ function Index() {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-      <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
+    <div className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
+      <header className="mb-9 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="grid size-9 place-items-center rounded-xl bg-gradient-accent text-primary-foreground shadow-glow">
             <Navigation className="size-4.5" aria-hidden />
           </span>
           <div>
             <p className="font-display text-xl leading-none">DayPilot</p>
-            <p className="text-xs text-muted-foreground">Simulated assistant · hackathon demo</p>
+            <p className="text-xs text-muted-foreground">Your day, thoughtfully orchestrated</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -135,20 +135,22 @@ function Index() {
         </div>
       </header>
 
-      <section className="mb-6">
+      <section className="daypilot-hero mb-7 overflow-hidden rounded-[2rem] border p-5 sm:p-8">
         <p className="text-sm font-medium text-muted-foreground" suppressHydrationWarning>
           {now ? now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) + " · " + now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "\u00a0"}
         </p>
-        <h1 className="mt-1 font-display text-4xl tracking-tight sm:text-5xl">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border bg-background/70 px-3 py-1 text-xs font-semibold text-primary"><Sparkles className="size-3.5" aria-hidden /> A calmer way to get things done</div>
+        <h1 className="mt-1 max-w-3xl font-display text-4xl tracking-tight sm:text-5xl lg:text-6xl">
           {greeting}. <span className="text-gradient-accent">Tell it what matters.</span>
         </h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">Describe your evening in one sentence. DayPilot drafts a plan, you approve it, and it runs the steps right here.</p>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">One natural request becomes a clear, editable plan. You stay in control—review each step, then run it against your tasks, shopping list, and breaks.</p>
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-muted-foreground"><span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-primary" /> Draft a plan</span><span aria-hidden className="text-border">/</span><span>Review & edit</span><span aria-hidden className="text-border">/</span><span>Run in-app tools</span></div>
       </section>
 
-      <div className="mb-6"><SummaryStrip state={state} /></div>
+      <div className="mb-7"><SummaryStrip state={state} /></div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <div className="space-y-6">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.95fr)] xl:gap-7">
+        <div className="space-y-5 sm:space-y-6">
           <Composer onSubmit={ask} disabled={running} />
           {plan && (
             <PlanPreview
