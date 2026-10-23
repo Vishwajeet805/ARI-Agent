@@ -100,10 +100,18 @@ function Index() {
   };
 
   const reset = () => {
-    setState(seedState()); setPlan(null); setActivity([]);
+    const fresh = seedState();
+    stateRef.current = fresh;
+    setState(fresh); setPlan(null); setActivity([]);
     toast("Demo reset to sample data.");
   };
-  const loadDemo = () => { setState(seedState()); ask(DEMO_PROMPT); };
+  const loadDemo = () => {
+    // Every click starts from the same fixture and clears the previous run timeline.
+    const fresh = seedState();
+    stateRef.current = fresh;
+    setState(fresh); setActivity([]); setPlan(planRequest(DEMO_PROMPT));
+    toast("Demo scenario loaded. Review the three proposed steps, then run it.");
+  };
 
   const upd = (fn: (s: AppState) => AppState) => setState((s) => fn(s));
   const hour = now?.getHours() ?? 12;
@@ -175,7 +183,11 @@ function Index() {
             onAdd={(name) => upd((s) => ({ ...s, groceries: [...s.groceries, { id: uid(), name, done: false, suggested: false }] }))}
             onRename={(id, name) => name.trim() && upd((s) => ({ ...s, groceries: s.groceries.map((g) => (g.id === id ? { ...g, name: name.trim(), suggested: false } : g)) }))}
           />
-          <BreakCard breaks={state.breaks} onRemove={(id) => upd((s) => ({ ...s, breaks: s.breaks.filter((b) => b.id !== id) }))} />
+          <BreakCard
+            breaks={state.breaks}
+            onRemove={(id) => upd((s) => ({ ...s, breaks: s.breaks.filter((b) => b.id !== id) }))}
+            onEdit={(id, title, minutes, startsAt) => upd((s) => ({ ...s, breaks: s.breaks.map((b) => b.id === id ? { ...b, title, minutes, startsAt } : b).sort((a, b) => a.startsAt.localeCompare(b.startsAt)) }))}
+          />
         </div>
       </div>
     </div>
