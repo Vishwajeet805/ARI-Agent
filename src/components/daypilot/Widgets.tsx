@@ -32,7 +32,7 @@ export function SummaryStrip({ state }: { state: AppState }) {
   const stats = [
     { icon: Target, label: "Focus planned", value: `${focus} min` },
     { icon: ListChecks, label: "Open tasks", value: String(open.length) },
-    { icon: ShoppingBasket, label: "Items to buy", value: String(left) },
+    { icon: ShoppingBasket, label: "Shopping items left", value: String(left) },
     { icon: Coffee, label: "Next break", value: next ? fmtTime(next.startsAt) : "—" },
   ];
   return (
@@ -58,7 +58,7 @@ export function SummaryStrip({ state }: { state: AppState }) {
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Next action: </span>
-          {nextTask ? `${nextTask.title} · ${nextTask.minutes} min` : total ? "All tasks completed — enjoy your breathing room." : "Add a task or ask DayPilot to plan your focus time."}
+          {nextTask ? `${nextTask.title} · ${nextTask.minutes} min` : total ? "All tasks completed — enjoy your breathing room." : "Task name or ask DayPilot to plan your focus time."}
         </p>
         {next && <p className="mt-1 text-xs text-muted-foreground">Next break: {fmtTime(next.startsAt)} ({next.minutes} min). Times are local; DayPilot does not send notifications.</p>}
       </div>
@@ -93,7 +93,7 @@ export function TasksCard({ tasks, onToggle, onRemove, onAdd, onEdit }: {
     <section className="glass-card p-5" aria-labelledby="tasks-h">
       <CardHead icon={ListChecks} title="Tasks" meta={`${done}/${tasks.length} done`} />
       {tasks.length === 0 ? (
-        <Empty text="No tasks yet. Ask DayPilot to plan some focus time." />
+        <Empty text="No tasks yet. Add one below or ask DayPilot to plan focus time." />
       ) : (
         <ul className="space-y-2">
           {tasks.map((t) => (
@@ -134,7 +134,7 @@ export function TasksCard({ tasks, onToggle, onRemove, onAdd, onEdit }: {
         onAdd(title, minutes); setDraftTitle(""); setDraftMinutes("25");
       }}>
         <Input value={draftTitle} onChange={(e) => setDraftTitle(e.target.value)} placeholder="Add a task" aria-label="New task title" className="h-9" />
-        <Input type="number" min={1} max={240} value={draftMinutes} onChange={(e) => setDraftMinutes(e.target.value)} aria-label="Task duration in minutes" className="h-9 w-24" />
+        <Input type="number" min={1} max={240} value={draftMinutes} onChange={(e) => setDraftMinutes(e.target.value)} aria-label="Task length in minutes" className="h-9 w-24" />
         <Button type="submit" size="sm" variant="outline" aria-label="Add task"><Plus className="size-4" /></Button>
       </form>
     </section>
@@ -154,7 +154,7 @@ export function GroceryCard({
     <section className="glass-card p-5" aria-labelledby="grocery-h">
       <CardHead icon={ShoppingBasket} title={title} meta={`${items.filter((i) => !i.done).length} left`} />
       {items.length === 0 ? (
-        <Empty text="Your list is empty." />
+        <Empty text="Nothing on this list yet. Grocery item below." />
       ) : (
         <ul className="space-y-1.5">
           {items.map((i) => (
@@ -223,7 +223,7 @@ export function BreakCard({ breaks, onRemove, onEdit }: {
     <section className="glass-card p-5">
       <CardHead icon={Coffee} title="Schedule" meta="in-app only" />
       {breaks.length === 0 ? (
-        <Empty text="No breaks scheduled." />
+        <Empty text="No breaks planned. Run a plan or add one through DayPilot." />
       ) : (
         <ul className="space-y-2">
           {breaks.map((b) => {
