@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DEMO_PROMPT, planRequest } from "./planner";
-import { runTool, seedState, scheduleBreak } from "./tools";
+import { restoreState, runTool, seedState, scheduleBreak } from "./tools";
 
 describe("deterministic planner", () => {
   it("keeps the three-step demo in task, grocery, break order", () => {
@@ -55,5 +55,22 @@ describe("deterministic planner", () => {
     const now = new Date("2026-10-23T18:00:00Z");
     const result = scheduleBreak(seedState(), { tool: "scheduleBreak", title: "Break", minutes: 10, afterMinutes: 45 }, now);
     expect(result.state.breaks[0]?.startsAt).toBe("2026-10-23T18:45:00.000Z");
+  });
+});
+
+describe("browser state restoration", () => {
+  it("falls back to sample state for malformed JSON or wrong shapes", () => {
+    expect(restoreState("{not-json")).toEqual(seedState());
+    expect(restoreState(JSON.stringify({ tasks: "nope", groceries: [], breaks: [] }))).toEqual(seedState());
+  });
+
+  it("filters invalid entries and preserves valid local items", () => {
+    const stored = {
+      ...seedState(),
+      tasks: [{ id: "ok", title: "Read", minutes: 20, done: false, source: "user" }, { id: "bad", title: "Oops", minutes: -1, done: false, source: "user" }],
+    };
+    const restored = restoreState(JSON.stringify(stored));
+    expect(restored.tasks).toHaveLength(1);
+    expect(restored.tasks[0]?.title).toBe("Read");
   });
 });
