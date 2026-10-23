@@ -2,46 +2,58 @@ import { describe, expect, it } from "vitest";
 import { DEMO_PROMPT, planRequest } from "./planner";
 import { runTool, seedState, scheduleBreak } from "./tools";
 
-describe("demo planner", () => {
-  const plan = planRequest(DEMO_PROMPT);
-
-  it("extracts exactly three steps in order", () => {
+describe("deterministic planner", () => {
+  it("keeps the three-step demo in task, grocery, break order", () => {
+    const plan = planRequest(DEMO_PROMPT);
     expect(plan.steps.map((s) => s.args.tool)).toEqual(["addTask", "createShoppingList", "scheduleBreak"]);
+    expect(plan.steps[0]?.args).toMatchObject({ tool: "addTask", title: "Finish my assignment", minutes: 45 });
+    expect(plan.steps[1]?.args).toMatchObject({
+      tool: "createShoppingList",
+      servings: 2,
+      items: ["Pasta", "Tomatoes", "Spinach", "Garlic", "Parmesan"],
+    });
+    expect(plan.steps[2]?.args).toMatchObject({ tool: "scheduleBreak", minutes: 10, afterMinutes: 45 });
   });
 
-  it("creates a 45-minute assignment task", () => {
-    const a = plan.steps[0]!.args;
-    expect(a.tool === "addTask" && a.minutes).toBe(45);
-    expect(a.tool === "addTask" && a.title).toBe("Finish my assignment");
+  it("does not split comma-separated grocery ingredients into separate actions", () => {
+    const plan = planRequest("Make a shopping list with pasta, tomatoes and spinach");
+    expect(plan.steps).toHaveLength(1);
+    expect(plan.steps[0]?.args).toMatchObject({
+      tool: "createShoppingList",
+      items: ["Pasta", "Tomatoes", "Spinach"],
+    });
   });
 
-  it("suggests the five dinner ingredients for two", () => {
-    const a = plan.steps[1]!.args;
-    expect(a.tool === "createShoppingList" && a.servings).toBe(2);
-    expect(a.tool === "createShoppingList" && a.items).toEqual(["Pasta", "Tomatoes", "Spinach", "Garlic", "Parmesan"]);
+  it("supports a semicolon-separated multi-action request", () => {
+    const plan = planRequest("Add a 30-minute study task; schedule a 5-minute break");
+    expect(plan.steps.map((s) => s.args.tool)).toEqual(["addTask", "scheduleBreak"]);
+    expect(plan.steps[1]?.args).toMatchObject({ tool: "scheduleBreak", afterMinutes: 30, minutes: 5 });
   });
 
-  it("schedules a 10-minute break after the focus block", () => {
-    const a = plan.steps[2]!.args;
-    expect(a.tool === "scheduleBreak" && a.minutes).toBe(10);
-    expect(a.tool === "scheduleBreak" && a.afterMinutes).toBe(45);
+  it("bounds extreme durations and servings to safe values", () => {
+    const plan = planRequest("Finish my assignment for 9999 minutes, make dinner grocery list for 99");
+    expect(plan.steps[0]?.args).toMatchObject({ tool: "addTask", minutes: 240 });
+    expect(plan.steps[1]?.args).toMatchObject({ tool: "createShoppingList", servings: 12 });
   });
 
-  it("returns no steps for unrelated text", () => {
-    expect(planRequest("what's the weather").steps).toHaveLength(0);
+  it("does not invent actions for unsupported requests", () => {
+    for (const request of ["What's the weather?", "Buy me a phone", "Turn off my lights", ""]) {
+      expect(planRequest(request).steps, request).toHaveLength(0);
+    }
   });
 
-  it("tools update state", () => {
-    let s = seedState();
-    for (const step of plan.steps) s = runTool(s, step.args).state;
-    expect(s.tasks[0]!.minutes).toBe(45);
-    expect(s.groceries.filter((g) => g.suggested)).toHaveLength(5);
-    expect(s.breaks).toHaveLength(1);
+  it("tools update state for the demo plan", () => {
+    const plan = planRequest(DEMO_PROMPT);
+    let state = seedState();
+    for (const step of plan.steps) state = runTool(state, step.args).state;
+    expect(state.tasks.some((task) => task.minutes === 45)).toBe(true);
+    expect(state.groceries.filter((item) => item.suggested)).toHaveLength(5);
+    expect(state.breaks).toHaveLength(1);
   });
 
-  it("break starts 45+ minutes after now", () => {
+  it("schedules a break after the focus block", () => {
     const now = new Date("2026-10-23T18:00:00Z");
-    const r = scheduleBreak(seedState(), { tool: "scheduleBreak", title: "b", minutes: 10, afterMinutes: 45 }, now);
-    expect(r.state.breaks[0]!.startsAt).toBe("2026-10-23T18:45:00.000Z");
+    const result = scheduleBreak(seedState(), { tool: "scheduleBreak", title: "Break", minutes: 10, afterMinutes: 45 }, now);
+    expect(result.state.breaks[0]?.startsAt).toBe("2026-10-23T18:45:00.000Z");
   });
 });
