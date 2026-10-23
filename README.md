@@ -1,46 +1,67 @@
 # DayPilot
 **Tell it what matters. Watch it get done.**
 
-A hackathon project for the Amazon Developer Hackathon **Alexa+ track, simulated-experience path**. DayPilot is a browser-based agentic workflow simulator: one natural-language request becomes a reviewable multi-step plan, and approved steps run as real app-local tools that update a dashboard.
+DayPilot is a browser-based **simulated conversational assistant** built for the Amazon Developer Hackathon Alexa+ track's simulated-experience path. It turns supported natural-language requests into a reviewable sequence of app-local actions, then shows each step's status and result.
 
-> **Honesty note:** DayPilot is *not* an official Alexa+ integration and uses no Amazon/Alexa/AWS services. The planner is a deterministic rule-based demo agent (no LLM, no network, no API keys). Actions only change state inside this browser — no real calendar, reminders, or notifications.
-
-## Run locally
-```bash
-bun install      # or npm install
-bun run dev      # http://localhost:8080
-bunx vitest run  # planner + tool tests
-```
+> **Important scope note:** DayPilot is not an official Alexa+ product or Alexa integration. It currently uses a deterministic rule-based planner (no LLM/API, no network calls, no API keys, and no Amazon/AWS services). Its actions update app state in this browser only; it does not create real calendar events, send notifications/reminders, buy products, or control devices.
 
 ## Features
-- Conversational composer (Enter to send), sample chips, optional browser speech-to-text with graceful fallback
-- Plan preview: editable step titles, include/exclude checkboxes, Run / Cancel
-- Sequential execution with an activity timeline: tool name, input, status badge, output
-- Dashboard: greeting, live date/time, summary stats, tasks (toggle/remove), grocery list (add/edit/remove/check, "suggested" badges), in-app break schedule
-- localStorage persistence, seed data, **Try the demo** and **Reset demo** buttons
-- "How this demo works" disclosure; responsive layout; keyboard + screen-reader labels; respects `prefers-reduced-motion`
+- Natural-language composer with sample prompts and optional browser speech-to-text where supported.
+- Editable proposed action plan with step toggles and explicit user-triggered execution.
+- Sequential tool execution log showing tool name, input, state, and result.
+- Tasks: view, complete/uncomplete, remove.
+- Shopping checklist: add, rename, complete/uncomplete, remove; suggested ingredients are identified.
+- In-app break schedule with relative start/end time and removal.
+- Summary dashboard, sample data, one-click demo, and reset control.
+- Browser localStorage persistence; no account or backend required.
+- Responsive UI, keyboard-friendly controls, reduced-motion support, and an in-app explanation of simulation limitations.
+
+## Quick start
+Requirements: Node.js 20+ (or a compatible current runtime) and npm, or Bun.
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite. To run automated tests:
+
+```bash
+npm test
+```
+
+Production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+The project uses React, TypeScript, Vite/TanStack Start, Tailwind CSS, shadcn/Radix UI primitives, Lucide icons, and Vitest. Consult package.json for exact versions.
+
+## Demo walkthrough (~2 minutes 30 seconds)
+1. Open the deployed app and describe DayPilot as a simulated tool-using assistant.
+2. Click **Try the demo** to generate a request containing a 45-minute assignment block, dinner shopping list for two, and 10-minute break.
+3. In the proposed plan, edit a step and toggle another off/on to demonstrate user control.
+4. Run the plan. Show `addTask`, `createShoppingList`, and `scheduleBreak` in the activity timeline and point out each state update.
+5. Tick off a task, edit/add a grocery item, and refresh the page to show browser-local persistence.
+6. End by opening “How this demo works” and explaining the local, deterministic simulation and its limitations.
 
 ## Architecture
-```
-src/lib/daypilot/
-  types.ts      domain types (Task, GroceryItem, BreakSlot, Plan, ActivityEntry)
-  planner.ts    planRequest(): split clauses -> keyword/regex classify -> tool steps
-  tools.ts      addTask, createShoppingList, scheduleBreak — pure (state, args) => {state, output}
-  planner.test.ts
-src/components/daypilot/
-  AgentPanel.tsx  Composer, PlanPreview, ActivityTimeline
-  Widgets.tsx     SummaryStrip, TasksCard, GroceryCard, BreakCard
-src/routes/index.tsx  page state, run loop, persistence
-```
-Adding a tool: add its args to `ToolArgs`, implement it in `tools.ts`, register it in `runTool`, and add a classifier rule in `planner.ts`.
+- `src/lib/daypilot/types.ts`: shared domain types.
+- `src/lib/daypilot/planner.ts`: keyword/regex-based natural-language parser that creates the proposed plan.
+- `src/lib/daypilot/tools.ts`: app-local state transformations for tasks, groceries, and breaks.
+- `src/lib/daypilot/planner.test.ts`: tests for the sample plan and its tools.
+- `src/components/daypilot/`: assistant composer, plan preview, activity log, and dashboard widgets.
+- `src/routes/index.tsx`: page state, sequential execution, and local persistence.
 
-## Demo script (~2.5 min)
-1. **(0:00)** Open the app. "DayPilot turns one sentence into a plan an agent executes." Point out the dashboard and the honesty disclosure.
-2. **(0:20)** Click **Try the demo**. The sample request becomes three steps: a 45-min assignment task, a dinner grocery list for two, a 10-min break.
-3. **(0:50)** Show approval control: edit a step title, uncheck/recheck a step. Read a rationale line.
-4. **(1:15)** Click **Run plan**. Narrate the timeline: `addTask` → `createShoppingList` → `scheduleBreak`, each with input, status, and output, while widgets update live.
-5. **(1:50)** Edit the grocery list (rename "Pasta" to "Penne", add "Basil"), tick off a task, refresh to show persistence.
-6. **(2:20)** Type a new request, e.g. "Plan 30 minutes to review chapter 4 and schedule a 5-minute break." Close by explaining the modular planner/tools and that this is the permitted simulated path.
+The plan parser is deliberately deterministic for reproducible judging demos. It is not a general-purpose LLM agent. App state is stored in the current browser profile; clearing browser storage resets it.
+
+## Hackathon submission notes
+- Track: Alexa+ simulated experience (select only if the current official rules accept this implementation and demo).
+- Runtime technologies: browser app-local tools only; no Amazon/Alexa/AWS SDK or service is claimed.
+- Code and setup instructions are included in this repository.
+- Public demo: https://daypilot-assistant-mu.vercel.app/
 
 ## License
-MIT — see [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE).
