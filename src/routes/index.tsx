@@ -46,6 +46,7 @@ function Index() {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [running, setRunning] = useState(false);
   const stateRef = useRef(state);
+  const runLockRef = useRef(false);
   stateRef.current = state;
   const now = useClock();
 
@@ -61,7 +62,9 @@ function Index() {
   const ask = (text: string) => { setActivity([]); setPlan(planRequest(text)); };
 
   const run = async () => {
-    if (!plan) return;
+    // Ref lock closes the tiny rapid-click race before React disables the button.
+    if (!plan || runLockRef.current) return;
+    runLockRef.current = true;
     setRunning(true);
     const entries: ActivityEntry[] = plan.steps.map((s) => ({
       stepId: s.id, title: s.title, tool: s.args.tool, input: describeInput(s.args),
@@ -84,6 +87,7 @@ function Index() {
         setActivity((a) => a.map((e) => (e.stepId === s.id ? { ...e, status: "failed", output: (err as Error).message } : e)));
       }
     }
+    runLockRef.current = false;
     setRunning(false);
     setPlan(null);
     if (failed) toast.error(`${failed} step${failed > 1 ? "s" : ""} failed — see activity.`);
