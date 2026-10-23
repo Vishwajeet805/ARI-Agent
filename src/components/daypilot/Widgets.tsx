@@ -40,7 +40,7 @@ export function SummaryStrip({ state }: { state: AppState }) {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="glass-card flex items-center gap-3 p-4">
-            <s.icon className="size-5 shrink-0 text-primary" aria-hidden />
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary"><s.icon className="size-4" aria-hidden /></span>
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground">{s.label}</p>
               <p className="truncate text-lg font-semibold tabular-nums">{s.value}</p>
@@ -54,7 +54,7 @@ export function SummaryStrip({ state }: { state: AppState }) {
           <p className="text-xs tabular-nums text-muted-foreground">{completed} of {total} complete · {progress}%</p>
         </div>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Today's task completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-          <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${progress}%` }} />
+          <div className="h-full rounded-full bg-primary transition-[width] duration-300" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
           <span className="font-medium text-foreground">Next action: </span>
@@ -229,7 +229,7 @@ export function BreakCard({ breaks, onRemove, onEdit }: {
           {breaks.map((b) => {
             const end = new Date(new Date(b.startsAt).getTime() + b.minutes * 60_000).toISOString();
             return (
-              <li key={b.id} className="group animate-rise rounded-xl bg-gradient-accent p-3 text-primary-foreground shadow-glow">
+              <li key={b.id} className="group animate-rise rounded-xl border bg-primary-soft/70 p-3 text-foreground transition-colors hover:bg-primary-soft">
                 {editing === b.id ? (
                   <div className="space-y-2 text-foreground">
                     <Input value={title} onChange={(e) => setTitle(e.target.value)} aria-label="Break title" maxLength={80} />
@@ -244,12 +244,12 @@ export function BreakCard({ breaks, onRemove, onEdit }: {
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <Coffee className="size-5" aria-hidden />
+                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-background text-primary"><Coffee className="size-4" aria-hidden /></span>
                     <div className="flex-1">
                       <p className="text-sm font-semibold">{b.title}</p>
                       <p className="text-xs opacity-85 tabular-nums">{fmtTime(b.startsAt)} – {fmtTime(end)} · {b.minutes} min</p>
                     </div>
-                    <button type="button" onClick={() => beginEdit(b)} aria-label={`Edit ${b.title}`} className="rounded p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100">
+                    <button type="button" onClick={() => beginEdit(b)} aria-label={`Edit ${b.title}`} className="grid size-9 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground focus-visible:opacity-100">
                       <Pencil className="size-3.5" />
                     </button>
                     <button type="button" onClick={() => onRemove(b.id)} aria-label={`Remove ${b.title}`} className="rounded p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100">
