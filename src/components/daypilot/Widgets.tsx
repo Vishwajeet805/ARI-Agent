@@ -50,8 +50,25 @@ export function fmtTime(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
-export function TasksCard({ tasks, onToggle, onRemove }: { tasks: Task[]; onToggle: (id: string) => void; onRemove: (id: string) => void }) {
+export function TasksCard({ tasks, onToggle, onRemove, onAdd, onEdit }: {
+  tasks: Task[];
+  onToggle: (id: string) => void;
+  onRemove: (id: string) => void;
+  onAdd: (title: string, minutes: number) => void;
+  onEdit: (id: string, title: string, minutes: number) => void;
+}) {
   const done = tasks.filter((t) => t.done).length;
+  const [draftTitle, setDraftTitle] = useState("");
+  const [draftMinutes, setDraftMinutes] = useState("25");
+  const [editing, setEditing] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editMinutes, setEditMinutes] = useState("25");
+  const commitEdit = (id: string) => {
+    const title = editTitle.trim();
+    const minutes = Number(editMinutes);
+    if (title && Number.isInteger(minutes) && minutes >= 1 && minutes <= 240) onEdit(id, title, minutes);
+    setEditing(null);
+  };
   return (
     <section className="glass-card p-5" aria-labelledby="tasks-h">
       <CardHead icon={ListChecks} title="Tasks" meta={`${done}/${tasks.length} done`} />
@@ -62,9 +79,18 @@ export function TasksCard({ tasks, onToggle, onRemove }: { tasks: Task[]; onTogg
           {tasks.map((t) => (
             <li key={t.id} className="group animate-rise flex items-center gap-3 rounded-xl border bg-background/60 px-3 py-2.5 transition-colors hover:border-primary/30">
               <Checkbox id={t.id} checked={t.done} onCheckedChange={() => onToggle(t.id)} aria-label={`Mark ${t.title} ${t.done ? "not done" : "done"}`} />
-              <label htmlFor={t.id} className={cn("flex-1 cursor-pointer text-sm", t.done && "text-muted-foreground line-through")}>
-                {t.title}
-              </label>
+              {editing === t.id ? (
+                <div className="flex min-w-0 flex-1 gap-1">
+                  <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} aria-label="Edit task title" className="h-7 min-w-0" />
+                  <Input type="number" min={1} max={240} value={editMinutes} onChange={(e) => setEditMinutes(e.target.value)} aria-label="Edit task minutes" className="h-7 w-20" />
+                  <Button size="sm" variant="outline" onClick={() => commitEdit(t.id)}>Save</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setEditing(null)}>Cancel</Button>
+                </div>
+              ) : (
+                <button type="button" onClick={() => { setEditing(t.id); setEditTitle(t.title); setEditMinutes(String(t.minutes)); }} className={cn("flex-1 cursor-pointer text-left text-sm", t.done && "text-muted-foreground line-through")} aria-label={`Edit task ${t.title}`}>
+                  {t.title}
+                </button>
+              )}
               {t.source === "agent" && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
                   <Sparkles className="size-3" aria-hidden /> DayPilot
@@ -80,6 +106,17 @@ export function TasksCard({ tasks, onToggle, onRemove }: { tasks: Task[]; onTogg
           ))}
         </ul>
       )}
+      <form className="mt-3 flex gap-2" onSubmit={(e) => {
+        e.preventDefault();
+        const title = draftTitle.trim();
+        const minutes = Number(draftMinutes);
+        if (!title || !Number.isInteger(minutes) || minutes < 1 || minutes > 240) return;
+        onAdd(title, minutes); setDraftTitle(""); setDraftMinutes("25");
+      }}>
+        <Input value={draftTitle} onChange={(e) => setDraftTitle(e.target.value)} placeholder="Add a task" aria-label="New task title" className="h-9" />
+        <Input type="number" min={1} max={240} value={draftMinutes} onChange={(e) => setDraftMinutes(e.target.value)} aria-label="Task duration in minutes" className="h-9 w-24" />
+        <Button type="submit" size="sm" variant="outline" aria-label="Add task"><Plus className="size-4" /></Button>
+      </form>
     </section>
   );
 }
