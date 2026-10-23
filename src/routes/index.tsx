@@ -13,10 +13,10 @@ import type { ActivityEntry, AppState, Plan } from "@/lib/daypilot/types";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "DayPilot — Tell it what matters. Watch it get done." },
-      { name: "description", content: "A simulated Alexa+-style agent that turns one request into a plan and runs in-app tools for tasks, groceries, and breaks." },
-      { property: "og:title", content: "DayPilot — agentic day planner demo" },
-      { property: "og:description", content: "Tell it what matters. Watch it plan and run tasks, grocery lists, and breaks." },
+      { title: "DayPilot — Plan your day, one request at a time." },
+      { name: "description", content: "A local demo planner that turns a request into editable steps for tasks, shopping lists, and breaks." },
+      { property: "og:title", content: "DayPilot — interactive day-planner demo" },
+      { property: "og:description", content: "Describe what you need. Review a plan for tasks, shopping lists, and breaks." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -96,21 +96,21 @@ function Index() {
     setRunning(false);
     setPlan(null);
     if (failed) toast.error(`${failed} step${failed > 1 ? "s" : ""} failed — see activity.`);
-    else toast.success("Plan complete — your dashboard is updated.");
+    else toast.success("Done. Your dashboard reflects the steps that ran.");
   };
 
   const reset = () => {
     const fresh = seedState();
     stateRef.current = fresh;
     setState(fresh); setPlan(null); setActivity([]);
-    toast("Demo reset to sample data.");
+    toast("Demo reset. Sample tasks and lists are back.");
   };
   const loadDemo = () => {
     // Every click starts from the same fixture and clears the previous run timeline.
     const fresh = seedState();
     stateRef.current = fresh;
     setState(fresh); setActivity([]); setPlan(planRequest(DEMO_PROMPT));
-    toast("Demo scenario loaded. Review the three proposed steps, then run it.");
+    toast("Demo loaded. Review the proposed steps, then run the plan.");
   };
 
   const upd = (fn: (s: AppState) => AppState) => setState((s) => fn(s));
@@ -126,7 +126,7 @@ function Index() {
           </span>
           <div>
             <p className="font-display text-xl leading-none">DayPilot</p>
-            <p className="text-xs text-muted-foreground">Your day, thoughtfully orchestrated</p>
+            <p className="text-xs text-muted-foreground">Plan tasks, lists, and breaks</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -139,12 +139,12 @@ function Index() {
         <p className="text-sm font-medium text-muted-foreground" suppressHydrationWarning>
           {now ? now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) + " · " + now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "\u00a0"}
         </p>
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border bg-background/70 px-3 py-1 text-xs font-semibold text-primary"><Sparkles className="size-3.5" aria-hidden /> A calmer way to get things done</div>
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border bg-background/70 px-3 py-1 text-xs font-semibold text-primary"><Sparkles className="size-3.5" aria-hidden /> Plan first. Run when you're ready.</div>
         <h1 className="mt-1 max-w-3xl font-display text-4xl tracking-tight sm:text-5xl lg:text-6xl">
-          {greeting}. <span className="text-gradient-accent">Tell it what matters.</span>
+          {greeting}. <span className="text-gradient-accent">What would you like to plan?</span>
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">One natural request becomes a clear, editable plan. You stay in control—review each step, then run it against your tasks, shopping list, and breaks.</p>
-        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-muted-foreground"><span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-primary" /> Draft a plan</span><span aria-hidden className="text-border">/</span><span>Review & edit</span><span aria-hidden className="text-border">/</span><span>Run in-app tools</span></div>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Describe a task, shopping list, or break. DayPilot drafts editable steps; review them before running. Changes stay in this browser.</p>
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-muted-foreground"><span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-primary" /> 1. Describe</span><span aria-hidden className="text-border">/</span><span>2. Review</span><span aria-hidden className="text-border">/</span><span>3. Run</span></div>
       </section>
 
       <div className="mb-7"><SummaryStrip state={state} /></div>
@@ -200,13 +200,13 @@ function HowItWorks() {
   return (
     <Collapsible className="glass-card p-5">
       <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 text-left">
-        <span className="flex items-center gap-2 font-semibold"><Info className="size-4 text-primary" aria-hidden />How this demo works</span>
+        <span className="flex items-center gap-2 font-semibold"><Info className="size-4 text-primary" aria-hidden />What this demo does</span>
         <ChevronDown className="size-4 transition group-data-[state=open]:rotate-180" aria-hidden />
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-3 space-y-2 text-sm text-muted-foreground">
         <p>DayPilot is a hackathon-built <strong className="text-foreground">simulated assistant</strong> for the Alexa+ track's simulated-experience path. It is not an official Alexa+ product and doesn't connect to Alexa or Amazon services.</p>
-        <p>A deterministic, rule-based demo planner (no AI model, no network) reads your request and proposes steps. When you run the plan, it calls tools written into this app — <code>addTask</code>, <code>createShoppingList</code>, <code>scheduleBreak</code> — which update the dashboard.</p>
-        <p>Everything is saved only in this browser. There's no real calendar, no reminders or notifications, and no account.</p>
+        <p>A deterministic rule-based planner (no AI model or network) turns supported requests into steps. Running them uses this app's tools — <code>addTask</code>, <code>createShoppingList</code>, and <code>scheduleBreak</code> — to update the dashboard.</p>
+        <p>Your changes are saved in this browser only. This demo does not connect to a calendar, send reminders or notifications, or control Alexa/Amazon services.</p>
       </CollapsibleContent>
     </Collapsible>
   );
