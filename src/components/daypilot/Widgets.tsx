@@ -97,12 +97,12 @@ export function TasksCard({ tasks, onToggle, onRemove, onAdd, onEdit }: {
       ) : (
         <ul className="space-y-2">
           {tasks.map((t) => (
-            <li key={t.id} className="group animate-rise flex items-center gap-3 rounded-xl border bg-background/60 px-3 py-2.5 transition-colors hover:border-primary/30">
+            <li key={t.id} className="group animate-rise flex flex-wrap items-center gap-2 rounded-xl border bg-background/60 px-3 py-2.5 transition-colors hover:border-primary/30 sm:flex-nowrap sm:gap-3">
               <Checkbox id={t.id} checked={t.done} onCheckedChange={() => onToggle(t.id)} aria-label={`Mark ${t.title} ${t.done ? "not done" : "done"}`} />
               {editing === t.id ? (
-                <div className="flex min-w-0 flex-1 gap-1">
+                <div className="flex min-w-0 flex-1 flex-wrap gap-1 sm:flex-nowrap">
                   <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} aria-label="Edit task title" className="h-7 min-w-0" />
-                  <Input type="number" min={1} max={240} value={editMinutes} onChange={(e) => setEditMinutes(e.target.value)} aria-label="Edit task minutes" className="h-7 w-20" />
+                  <Input type="number" min={1} max={240} value={editMinutes} onChange={(e) => setEditMinutes(e.target.value)} aria-label="Edit task minutes" className="h-7 w-20 shrink-0" />
                   <Button size="sm" variant="outline" onClick={() => commitEdit(t.id)}>Save</Button>
                   <Button size="sm" variant="ghost" onClick={() => setEditing(null)}>Cancel</Button>
                 </div>
@@ -119,7 +119,7 @@ export function TasksCard({ tasks, onToggle, onRemove, onAdd, onEdit }: {
               <span className="inline-flex items-center gap-1 text-xs tabular-nums text-muted-foreground">
                 <Clock className="size-3" aria-hidden />{t.minutes}m
               </span>
-              <button onClick={() => onRemove(t.id)} aria-label={`Remove ${t.title}`} className="rounded p-1 text-muted-foreground opacity-0 transition hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100">
+              <button onClick={() => onRemove(t.id)} aria-label={`Remove ${t.title}`} className="rounded p-1 text-muted-foreground transition hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100">
                 <Trash2 className="size-3.5" />
               </button>
             </li>
