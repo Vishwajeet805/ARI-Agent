@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clock, Coffee, ListChecks, Plus, ShoppingBasket, Sparkles, Target, Trash2 } from "lucide-react";
+import { Clock, Coffee, ListChecks, Pencil, Plus, ShoppingBasket, Sparkles, Target, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -173,7 +173,32 @@ export function GroceryCard({
   );
 }
 
-export function BreakCard({ breaks, onRemove }: { breaks: BreakSlot[]; onRemove: (id: string) => void }) {
+export function BreakCard({ breaks, onRemove, onEdit }: {
+  breaks: BreakSlot[];
+  onRemove: (id: string) => void;
+  onEdit: (id: string, title: string, minutes: number, startsAt: string) => void;
+}) {
+  const [editing, setEditing] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [minutes, setMinutes] = useState("10");
+  const [startsAt, setStartsAt] = useState("");
+  const beginEdit = (b: BreakSlot) => {
+    setEditing(b.id);
+    setTitle(b.title);
+    setMinutes(String(b.minutes));
+    const local = new Date(b.startsAt);
+    setStartsAt(new Date(local.getTime() - local.getTimezoneOffset() * 60_000).toISOString().slice(0, 16));
+  };
+  const save = (id: string) => {
+    const cleanTitle = title.trim();
+    const duration = Number(minutes);
+    const date = new Date(startsAt);
+    if (!cleanTitle || !Number.isInteger(duration) || duration < 1 || duration > 180 || !Number.isFinite(date.getTime())) {
+      return;
+    }
+    onEdit(id, cleanTitle, duration, date.toISOString());
+    setEditing(null);
+  };
   return (
     <section className="glass-card p-5">
       <CardHead icon={Coffee} title="Schedule" meta="in-app only" />
@@ -184,15 +209,34 @@ export function BreakCard({ breaks, onRemove }: { breaks: BreakSlot[]; onRemove:
           {breaks.map((b) => {
             const end = new Date(new Date(b.startsAt).getTime() + b.minutes * 60_000).toISOString();
             return (
-              <li key={b.id} className="group animate-rise flex items-center gap-3 rounded-xl bg-gradient-accent p-3 text-primary-foreground shadow-glow">
-                <Coffee className="size-5" aria-hidden />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold">{b.title}</p>
-                  <p className="text-xs opacity-85 tabular-nums">{fmtTime(b.startsAt)} – {fmtTime(end)} · {b.minutes} min</p>
-                </div>
-                <button onClick={() => onRemove(b.id)} aria-label={`Remove ${b.title}`} className="rounded p-1 opacity-70 hover:opacity-100">
-                  <Trash2 className="size-3.5" />
-                </button>
+              <li key={b.id} className="group animate-rise rounded-xl bg-gradient-accent p-3 text-primary-foreground shadow-glow">
+                {editing === b.id ? (
+                  <div className="space-y-2 text-foreground">
+                    <Input value={title} onChange={(e) => setTitle(e.target.value)} aria-label="Break title" maxLength={80} />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input type="number" min={1} max={180} value={minutes} onChange={(e) => setMinutes(e.target.value)} aria-label="Break duration minutes" />
+                      <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} aria-label="Break start date and time" />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button size="sm" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                      <Button size="sm" onClick={() => save(b.id)}>Save break</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <Coffee className="size-5" aria-hidden />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{b.title}</p>
+                      <p className="text-xs opacity-85 tabular-nums">{fmtTime(b.startsAt)} – {fmtTime(end)} · {b.minutes} min</p>
+                    </div>
+                    <button type="button" onClick={() => beginEdit(b)} aria-label={`Edit ${b.title}`} className="rounded p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100">
+                      <Pencil className="size-3.5" />
+                    </button>
+                    <button type="button" onClick={() => onRemove(b.id)} aria-label={`Remove ${b.title}`} className="rounded p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100">
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+                )}
               </li>
             );
           })}
