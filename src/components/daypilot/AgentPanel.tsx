@@ -9,9 +9,9 @@ import type { ActivityEntry, Plan, StepStatus } from "@/lib/daypilot/types";
 import { cn } from "@/lib/utils";
 
 const CHIPS = [
-  { label: "Get ready for tonight", text: DEMO_PROMPT },
-  { label: "Study + break", text: "Plan 30 minutes to review chapter 4 and schedule a 5-minute break." },
-  { label: "Lunch list", text: "Make a lunch grocery list for one with bread, avocado, eggs." },
+  { label: "Plan tonight", text: DEMO_PROMPT },
+  { label: "Study session + break", text: "Plan 30 minutes to review chapter 4 and schedule a 5-minute break." },
+  { label: "Make a lunch list", text: "Make a lunch grocery list for one with bread, avocado, eggs." },
 ];
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -51,7 +51,7 @@ export function Composer({ onSubmit, disabled }: { onSubmit: (text: string) => v
         <label htmlFor="ask" className="sr-only">Tell DayPilot what you need</label>
         <Textarea
           id="ask" value={text} onChange={(e) => setText(e.target.value)} rows={3}
-          placeholder="Tell it what matters… e.g. plan 45 minutes to finish my essay and schedule a break"
+          placeholder="Try: “Plan 45 minutes for my essay, then add a 5-minute break.”"
           className="min-h-24 resize-none border-0 bg-transparent p-1 pr-24 text-base shadow-none focus-visible:ring-0"
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
         />
@@ -92,7 +92,7 @@ export function PlanPreview({
     <section className="glass-card animate-rise p-5" aria-labelledby="plan-h">
       <div className="mb-1 flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-primary">Proposed plan</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-primary">Review your plan</p>
           <h2 id="plan-h" className="mt-1 font-display text-xl">"{plan.request}"</h2>
         </div>
         <Button variant="ghost" size="icon" onClick={onCancel} disabled={running} aria-label="Clear plan"><X className="size-4" /></Button>
@@ -104,7 +104,7 @@ export function PlanPreview({
             {plan.steps.map((s, i) => (
               <li key={s.id} className={cn("rounded-xl border bg-background/60 p-3 transition", !s.enabled && "opacity-55")}>
                 <div className="flex items-center gap-3">
-                  <Checkbox checked={s.enabled} onCheckedChange={() => onToggle(s.id)} disabled={running} aria-label={`Include step ${i + 1}`} />
+                  <Checkbox checked={s.enabled} onCheckedChange={() => onToggle(s.id)} disabled={running} aria-label={`Run step ${i + 1}`} />
                   <span className="text-xs font-semibold tabular-nums text-muted-foreground">{i + 1}</span>
                   <Input value={s.title} disabled={running} onChange={(e) => onEditTitle(s.id, e.target.value)} aria-label={`Step ${i + 1} title`} className="h-8 border-transparent bg-transparent px-1 font-medium shadow-none hover:border-input" />
                   <code className="hidden shrink-0 rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground sm:inline">{s.args.tool}()</code>
@@ -117,7 +117,7 @@ export function PlanPreview({
             <Button variant="outline" onClick={onCancel} disabled={running}>Cancel</Button>
             <Button onClick={onRun} disabled={running || enabled === 0} className="bg-gradient-accent shadow-glow">
               {running ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
-              {running ? "Running…" : `Run plan (${enabled})`}
+              {running ? "Running…" : `Run ${enabled} step${enabled === 1 ? "" : "s"}`}
             </Button>
           </div>
         </>
@@ -142,7 +142,7 @@ export function ActivityTimeline({ entries }: { entries: ActivityEntry[] }) {
         <h2 id="act-h" className="text-base font-semibold">Agent activity</h2>
       </div>
       {entries.length === 0 ? (
-        <p className="rounded-xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">Tool calls will appear here when you run a plan.</p>
+        <p className="rounded-xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">Run your plan to see each step and its result here.</p>
       ) : (
         <ol className="relative space-y-4 border-l pl-5">
           {entries.map((e) => {
@@ -157,7 +157,7 @@ export function ActivityTimeline({ entries }: { entries: ActivityEntry[] }) {
                   <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold", st.cls)}>{st.label}</span>
                 </div>
                 <p className="mt-1 text-sm font-medium">{e.title}</p>
-                <p className="mt-0.5 break-all font-mono text-[11px] text-muted-foreground">input {e.input}</p>
+                <p className="mt-0.5 break-all font-mono text-[11px] text-muted-foreground">Details: {e.input}</p>
                 {e.output && <p className={cn("mt-1 text-xs", e.status === "failed" ? "text-destructive" : "text-success")}>→ {e.output}</p>}
               </li>
             );
