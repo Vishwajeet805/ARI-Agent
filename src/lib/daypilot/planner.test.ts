@@ -40,6 +40,7 @@ describe("deterministic planner", () => {
     for (const request of ["What's the weather?", "Buy me a phone", "Turn off my lights", ""]) {
       expect(planRequest(request).steps, request).toHaveLength(0);
     }
+    expect(planRequest("Buy groceries").steps[0]?.args.tool).toBe("createShoppingList");
   });
 
   it("tools update state for the demo plan", () => {
