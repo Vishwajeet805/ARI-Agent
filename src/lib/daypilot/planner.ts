@@ -21,7 +21,7 @@ function minutesIn(text: string): number | undefined {
   const m = text.match(/(\d{1,3})\s*(?:-|\s)?\s*(?:min(?:ute)?s?|m\b)/i);
   if (m) return Number(m[1]);
   const h = text.match(/(\d{1,2}(?:\.\d)?)\s*(?:-|\s)?\s*(?:hours?|hrs?|h\b)/i);
-  if (h) return Math.round(Number(h[1]) * 60);
+  if (h) return Math.round(Number(h[1] ?? 0) * 60);
   if (/half an hour/i.test(text)) return 30;
   if (/an hour/i.test(text)) return 60;
   return undefined;
@@ -30,7 +30,7 @@ function minutesIn(text: string): number | undefined {
 function servingsIn(text: string): number {
   const m = text.match(/for\s+(\d+|one|two|three|four|five|six|seven|eight)\b/i);
   if (!m) return 2;
-  const v = m[1].toLowerCase();
+  const v = (m[1] ?? "").toLowerCase();
   return NUMBER_WORDS[v] ?? (Number(v) || 2);
 }
 
@@ -52,7 +52,7 @@ function classify(clause: string): ToolArgs | null {
   const c = clause.toLowerCase();
   if (/\b(grocery|groceries|shopping|ingredients|buy)\b/.test(c)) {
     const withMatch = clause.match(/\bwith\s+(.+)$/i);
-    const items = withMatch
+    const items = withMatch?.[1]
       ? withMatch[1].split(/\s*(?:,|\band\b|&)\s*/).map(capitalize).filter(Boolean)
       : DEFAULT_DINNER_ITEMS;
     const servings = servingsIn(clause);
@@ -64,7 +64,7 @@ function classify(clause: string): ToolArgs | null {
   }
   if (/\b(task|finish|work|study|focus|write|read|review|assignment|plan|complete|prepare)\b/.test(c)) {
     const toMatch = clause.match(/\bto\s+(.+)$/i);
-    let title = toMatch ? toMatch[1] : clause.replace(/^(plan|add|create)\s+(a\s+)?(task\s+)?/i, "");
+    let title = toMatch?.[1] ? toMatch[1] : clause.replace(/^(plan|add|create)\s+(a\s+)?(task\s+)?/i, "");
     title = title.replace(/\d+\s*-?\s*(minutes?|mins?|hours?)\s*(of|for)?/i, "").trim();
     return { tool: "addTask", title: capitalize(title || "Focused work"), minutes: minutesIn(clause) ?? 25 };
   }
