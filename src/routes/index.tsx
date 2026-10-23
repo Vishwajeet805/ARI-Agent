@@ -43,6 +43,7 @@ function useClock() {
 function Index() {
   const [state, setState] = useState<AppState>(() => seedState());
   const [loaded, setLoaded] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [running, setRunning] = useState(false);
@@ -125,6 +126,71 @@ function Index() {
   const upd = (fn: (s: AppState) => AppState) => setState((s) => fn(s));
   const hour = now?.getHours() ?? 12;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
+  if (showLanding) {
+    return (
+      <main className="ari-landing min-h-screen overflow-hidden px-5 py-5 sm:px-8 lg:px-12">
+        <div className="ari-landing-noise" aria-hidden="true" />
+        <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
+          <a href="#welcome" className="flex items-center gap-3" aria-label="Ari welcome">
+            <span className="ari-brand-mark grid size-11 place-items-center rounded-[14px]" aria-hidden="true">
+              <svg viewBox="0 0 40 40" className="size-7" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 28.5 19.8 9l9.2 19.5" /><path d="M14.7 21h10.6" /><path d="M7.5 17.5a13 13 0 0 1 25 0" opacity=".48" />
+                <path d="m30.5 7 .9 2.2 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+            <span className="leading-tight"><span className="block font-display text-2xl font-semibold tracking-[-0.06em]">Ari<span className="text-primary">.</span></span><span className="mt-0.5 block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Your day, in rhythm</span></span>
+          </a>
+          <span className="hidden rounded-full border border-border/70 bg-background/45 px-4 py-2 text-xs font-medium text-muted-foreground sm:inline-flex">A little more breathing room <span className="ml-2 text-primary">✳</span></span>
+        </header>
+
+        <section id="welcome" className="relative z-10 mx-auto grid min-h-[calc(100svh-6.5rem)] max-w-7xl items-center gap-12 py-14 lg:grid-cols-[1.02fr_.98fr] lg:gap-16 lg:py-16">
+          <div className="ari-landing-copy animate-rise">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-primary"><Sparkles className="size-3.5" /> YOUR PERSONAL PLANNING SPACE</div>
+            <h1 className="max-w-2xl font-display text-[3.45rem] font-medium leading-[0.99] tracking-[-0.065em] sm:text-6xl lg:text-[5.2rem]">Less juggling.<br /><span className="ari-landing-accent">More living.</span></h1>
+            <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">Give your everyday to-dos a little structure. Ari turns requests into clear, editable plans for tasks, shopping, and breaks—then lets you choose what to run.</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button size="lg" onClick={() => { setShowLanding(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="group h-12 rounded-full px-6 text-sm font-semibold shadow-glow">
+                Open Ari <span className="ml-2 transition-transform group-hover:translate-x-1">↗</span>
+              </Button>
+              <a href="#landing-details" className="inline-flex h-12 items-center justify-center rounded-full px-5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">Take a quick look <span className="ml-2">↓</span></a>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground"><span className="inline-flex items-center gap-2"><span className="size-1.5 rounded-full bg-primary" /> You stay in control</span><span>Editable before you run</span><span>Saved in this browser</span></div>
+          </div>
+
+          <div className="ari-landing-visual relative mx-auto w-full max-w-[540px] animate-rise" style={{ animationDelay: "100ms" }}>
+            <div className="ari-orbit ari-orbit-one" aria-hidden="true" /><div className="ari-orbit ari-orbit-two" aria-hidden="true" />
+            <div className="ari-preview-card relative z-10 rounded-[1.75rem] border p-5 shadow-2xl sm:p-7">
+              <div className="flex items-center justify-between border-b border-border/70 pb-4">
+                <div><p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">A sample day</p><h2 className="mt-1 font-display text-2xl tracking-tight">A little more in flow</h2></div>
+                <span className="grid size-10 place-items-center rounded-2xl bg-primary/10 text-primary"><Sparkles className="size-5" /></span>
+              </div>
+              <div className="mt-5 rounded-2xl bg-primary/7 p-4">
+                <p className="text-xs font-semibold text-primary">Ari's plan preview</p><p className="mt-1 text-sm leading-6">“Help me fit in focus time, groceries, and a proper break.”</p>
+                <div className="mt-3 flex items-center gap-2 text-[0.68rem] font-medium text-muted-foreground"><span className="size-1.5 rounded-full bg-primary" /> Request → reviewable steps</div>
+              </div>
+              <div className="mt-5 space-y-3">
+                <div className="flex items-center gap-3 rounded-xl border border-border/70 bg-background/55 p-3"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-500/10 text-emerald-600"><icon className="size-4">✓</icon></span><div className="min-w-0 flex-1"><p className="text-sm font-semibold">Focus session</p><p className="text-xs text-muted-foreground">25 minutes · Task</p></div><span className="text-xs text-muted-foreground">01</span></div>
+                <div className="flex items-center gap-3 rounded-xl border border-border/70 bg-background/55 p-3"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-500/10 text-amber-600">⌁</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold">Pick up groceries</p><p className="text-xs text-muted-foreground">Shopping list · Editable</p></div><span className="text-xs text-muted-foreground">02</span></div>
+                <div className="flex items-center gap-3 rounded-xl border border-border/70 bg-background/55 p-3"><span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-500/10 text-sky-600">☼</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold">Take a reset break</p><p className="text-xs text-muted-foreground">10 minutes · Break</p></div><span className="text-xs text-muted-foreground">03</span></div>
+              </div>
+              <div className="mt-5 flex items-center justify-between rounded-xl border border-dashed border-primary/30 px-3.5 py-3"><span className="text-xs text-muted-foreground">Review the steps before running</span><span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-bold text-primary">Your call</span></div>
+            </div>
+            <div className="ari-floating-note absolute -bottom-5 -left-4 z-20 hidden items-center gap-2 rounded-2xl border px-4 py-3 shadow-lg sm:flex"><span className="grid size-8 place-items-center rounded-xl bg-primary/10 text-primary">✦</span><span><span className="block text-xs font-bold">Small steps,</span><span className="block text-[0.68rem] text-muted-foreground">clearer days</span></span></div>
+          </div>
+        </section>
+
+        <section id="landing-details" className="relative z-10 mx-auto max-w-7xl border-t border-border/50 py-8">
+          <div className="grid gap-5 sm:grid-cols-3">
+            <div className="ari-feature"><span className="ari-feature-number">01</span><h3>Say what’s on your mind</h3><p>Describe a task, a shopping list, or when you need a pause.</p></div>
+            <div className="ari-feature"><span className="ari-feature-number">02</span><h3>Review the plan</h3><p>See the suggested steps and adjust them before anything runs.</p></div>
+            <div className="ari-feature"><span className="ari-feature-number">03</span><h3>Keep your day yours</h3><p>Run the steps you want. Your demo changes stay in this browser.</p></div>
+          </div>
+          <div className="mt-7 flex flex-col items-start justify-between gap-3 border-t border-border/40 pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center"><span>Ari is a hackathon prototype · Simulated interactions, no Alexa/Amazon service connection</span><button onClick={() => { setShowLanding(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="font-semibold text-primary hover:underline">Enter the planning studio ↗</button></div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div id="top" className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
