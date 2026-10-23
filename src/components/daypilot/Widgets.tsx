@@ -25,6 +25,10 @@ export function SummaryStrip({ state }: { state: AppState }) {
   const focus = open.reduce((n, t) => n + t.minutes, 0);
   const left = state.groceries.filter((g) => !g.done).length;
   const next = state.breaks[0];
+  const total = state.tasks.length;
+  const completed = total - open.length;
+  const progress = total ? Math.round((completed / total) * 100) : 0;
+  const nextTask = open[0];
   const stats = [
     { icon: Target, label: "Focus planned", value: `${focus} min` },
     { icon: ListChecks, label: "Open tasks", value: String(open.length) },
@@ -32,17 +36,33 @@ export function SummaryStrip({ state }: { state: AppState }) {
     { icon: Coffee, label: "Next break", value: next ? fmtTime(next.startsAt) : "—" },
   ];
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      {stats.map((s) => (
-        <div key={s.label} className="glass-card flex items-center gap-3 p-4">
-          <s.icon className="size-5 shrink-0 text-primary" aria-hidden />
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">{s.label}</p>
-            <p className="truncate text-lg font-semibold tabular-nums">{s.value}</p>
+    <section className="space-y-3" aria-label="Today's progress and next action">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {stats.map((s) => (
+          <div key={s.label} className="glass-card flex items-center gap-3 p-4">
+            <s.icon className="size-5 shrink-0 text-primary" aria-hidden />
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">{s.label}</p>
+              <p className="truncate text-lg font-semibold tabular-nums">{s.value}</p>
+            </div>
           </div>
+        ))}
+      </div>
+      <div className="glass-card p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-semibold">Today's task progress</p>
+          <p className="text-xs tabular-nums text-muted-foreground">{completed} of {total} complete · {progress}%</p>
         </div>
-      ))}
-    </div>
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Today's task completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+          <div className="h-full rounded-full bg-primary transition-[width]" style={{ width: `${progress}%` }} />
+        </div>
+        <p className="mt-3 text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">Next action: </span>
+          {nextTask ? `${nextTask.title} · ${nextTask.minutes} min` : total ? "All tasks completed — enjoy your breathing room." : "Add a task or ask DayPilot to plan your focus time."}
+        </p>
+        {next && <p className="mt-1 text-xs text-muted-foreground">Next break: {fmtTime(next.startsAt)} ({next.minutes} min). Times are local; DayPilot does not send notifications.</p>}
+      </div>
+    </section>
   );
 }
 
