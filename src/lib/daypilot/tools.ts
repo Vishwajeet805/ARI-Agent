@@ -59,6 +59,47 @@ export function describeInput(args: ToolArgs): string {
   return JSON.stringify(rest);
 }
 
+
+/** Parse persisted browser data defensively; invalid/legacy shapes fall back to sample state. */
+export function restoreState(raw: string | null): AppState {
+  if (!raw) return seedState();
+  try {
+    const value: unknown = JSON.parse(raw);
+    if (!value || typeof value !== "object") return seedState();
+    const candidate = value as Partial<AppState>;
+    if (!Array.isArray(candidate.tasks) || !Array.isArray(candidate.groceries) || !Array.isArray(candidate.breaks)) return seedState();
+
+    const tasks = candidate.tasks.filter((item): item is AppState["tasks"][number] => {
+      if (!item || typeof item !== "object") return false;
+      const t = item as AppState["tasks"][number];
+      return typeof t.id === "string" && typeof t.title === "string" &&
+        Number.isFinite(t.minutes) && t.minutes > 0 && typeof t.done === "boolean" &&
+        (t.source === "agent" || t.source === "seed" || t.source === "user");
+    });
+    const groceries = candidate.groceries.filter((item): item is AppState["groceries"][number] => {
+      if (!item || typeof item !== "object") return false;
+      const g = item as AppState["groceries"][number];
+      return typeof g.id === "string" && typeof g.name === "string" &&
+        typeof g.done === "boolean" && typeof g.suggested === "boolean";
+    });
+    const breaks = candidate.breaks.filter((item): item is AppState["breaks"][number] => {
+      if (!item || typeof item !== "object") return false;
+      const b = item as AppState["breaks"][number];
+      return typeof b.id === "string" && typeof b.title === "string" &&
+        Number.isFinite(b.minutes) && b.minutes > 0 && typeof b.startsAt === "string" &&
+        Number.isFinite(Date.parse(b.startsAt));
+    });
+    return {
+      tasks: tasks.slice(0, 100),
+      groceries: groceries.slice(0, 200),
+      breaks: breaks.slice(0, 50),
+      groceryTitle: typeof candidate.groceryTitle === "string" ? candidate.groceryTitle.slice(0, 100) : "Groceries",
+    };
+  } catch {
+    return seedState();
+  }
+}
+
 export function seedState(): AppState {
   return {
     tasks: [
