@@ -12,7 +12,7 @@ import type { ActivityEntry, AppState, Plan } from "@/lib/daypilot/types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    links: [{ rel: "icon", type: "image/svg+xml", href: "/ari-mark.svg" }],
+    links: [{ rel: "icon", type: "image/svg+xml", href: "/ari-symbol.svg" }],
     meta: [
       { title: "Ari — Your day, made easier." },
       { name: "description", content: "A local demo planner that turns a request into editable steps for tasks, shopping lists, and breaks." },
@@ -145,13 +145,8 @@ function Index() {
         <div className="ari-landing-noise" aria-hidden="true" />
         <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
           <a href="#welcome" className="flex items-center gap-3" aria-label="Ari welcome">
-            <span className="ari-brand-mark grid size-11 place-items-center rounded-[14px]" aria-hidden="true">
-              <svg viewBox="0 0 40 40" className="size-7" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 28.5 19.8 9l9.2 19.5" /><path d="M14.7 21h10.6" /><path d="M7.5 17.5a13 13 0 0 1 25 0" opacity=".48" />
-                <path d="m30.5 7 .9 2.2 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="currentColor" stroke="none" />
-              </svg>
-            </span>
-            <span className="leading-tight"><span className="block font-display text-2xl font-semibold tracking-[-0.06em]">Ari<span className="text-primary">.</span></span><span className="mt-0.5 block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Your day, in rhythm</span></span>
+            <span className="ari-brand-mark grid size-11 place-items-center" aria-hidden="true"><img src="/ari-symbol.svg" alt="" className="h-10 w-10 object-contain" /></span>
+            <span className="leading-tight"><span className="block font-sans text-2xl font-extrabold tracking-[-0.06em] text-foreground">Ari<span className="text-primary">.</span></span><span className="mt-0.5 block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Your day, in rhythm</span></span>
           </a>
           <span className="hidden rounded-full border border-border/70 bg-background/45 px-4 py-2 text-xs font-medium text-muted-foreground sm:inline-flex">A little more breathing room <span className="ml-2 text-primary">✳</span></span>
         </header>
@@ -208,17 +203,9 @@ function Index() {
     <div id="top" className={`daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8${studioEntering ? " ari-studio-enter" : ""}`}>
       <header className="ari-navbar mb-9 grid grid-cols-1 items-center gap-4 rounded-2xl border px-4 py-3.5 sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
         <a href="#top" className="group flex items-center gap-3 justify-self-center lg:justify-self-start" aria-label="Ari home">
-          <span className="ari-brand-mark grid size-11 place-items-center rounded-[14px] sm:size-12" aria-hidden="true">
-            <svg viewBox="0 0 40 40" className="size-7 sm:size-8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M11 28.5 19.8 9l9.2 19.5" />
-              <path d="M14.7 21h10.6" />
-              <path d="M7.5 17.5a13 13 0 0 1 25 0" opacity=".48" />
-              <path d="m30.5 7 .9 2.2 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="currentColor" stroke="none" />
-              <circle cx="20" cy="31.5" r="1.3" fill="currentColor" stroke="none" />
-            </svg>
-          </span>
+          <span className="ari-brand-mark grid size-11 place-items-center sm:size-12" aria-hidden="true"><img src="/ari-symbol.svg" alt="" className="h-10 w-10 object-contain sm:h-11 sm:w-11" /></span>
           <span className="leading-tight">
-            <span className="block font-display text-[1.8rem] font-semibold tracking-[-0.055em] sm:text-[2rem]">Ari<span className="text-primary">.</span></span>
+            <span className="block font-sans text-[1.8rem] font-extrabold tracking-[-0.055em] text-foreground sm:text-[2rem]">Ari<span className="text-primary">.</span></span>
             <span className="mt-0.5 block text-[0.68rem] font-medium tracking-[0.13em] text-muted-foreground uppercase">Your day, in rhythm</span>
           </span>
         </a>
