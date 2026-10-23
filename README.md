@@ -37,7 +37,7 @@ npm run build
 npm run preview
 ```
 
-The project uses React, TypeScript, Vite/TanStack Start, Tailwind CSS, shadcn/Radix UI primitives, Lucide icons, and Vitest. Consult package.json for exact versions.
+The project uses React, TypeScript, Vite/TanStack Start, Tailwind CSS, shadcn/Radix UI primitives, Lucide icons, and Vitest. Consult `package.json` for exact versions.
 
 ## Demo walkthrough (~2 minutes 30 seconds)
 1. Open the deployed app and describe DayPilot as a simulated tool-using assistant.
