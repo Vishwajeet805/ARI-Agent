@@ -127,23 +127,31 @@ function Index() {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
-      <header className="mb-9 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="grid size-12 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm sm:size-14" aria-hidden="true">
-            <svg viewBox="0 0 28 28" className="size-7 sm:size-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5.5 11.5a8.5 8.5 0 0 1 17 0" /><path d="M8.5 14a5.5 5.5 0 0 1 11 0" /><path d="M11.5 16.5a2.5 2.5 0 0 1 5 0" /><path d="M14 19v2.5" /><path d="m21.5 4 .8 1.8 1.7.7-1.7.8-.8 1.7-.7-1.7-1.8-.8 1.8-.7z" fill="currentColor" stroke="none" />
+    <div id="top" className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
+      <header className="ari-navbar mb-9 grid grid-cols-1 items-center gap-4 rounded-2xl border px-4 py-3.5 sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
+        <a href="#top" className="group flex items-center gap-3 justify-self-center lg:justify-self-start" aria-label="Ari home">
+          <span className="ari-brand-mark grid size-11 place-items-center rounded-[14px] sm:size-12" aria-hidden="true">
+            <svg viewBox="0 0 40 40" className="size-7 sm:size-8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 28.5 19.8 9l9.2 19.5" />
+              <path d="M14.7 21h10.6" />
+              <path d="M7.5 17.5a13 13 0 0 1 25 0" opacity=".48" />
+              <path d="m30.5 7 .9 2.2 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="currentColor" stroke="none" />
+              <circle cx="20" cy="31.5" r="1.3" fill="currentColor" stroke="none" />
             </svg>
           </span>
-          <div>
-            <p className="font-display text-3xl font-semibold leading-none tracking-tight sm:text-4xl">Ari</p>
-            <p className="mt-1 text-sm text-muted-foreground">Plan tasks, lists, and breaks</p>
-          </div>
+          <span className="leading-tight">
+            <span className="block font-display text-[1.8rem] font-semibold tracking-[-0.055em] sm:text-[2rem]">Ari<span className="text-primary">.</span></span>
+            <span className="mt-0.5 block text-[0.68rem] font-medium tracking-[0.13em] text-muted-foreground uppercase">Your day, in rhythm</span>
+          </span>
+        </a>
+        <div className="hidden items-center gap-2 rounded-full border bg-background/65 px-3.5 py-2 text-xs font-medium text-muted-foreground lg:flex">
+          <span className="size-1.5 rounded-full bg-primary shadow-[0_0_0_3px_hsl(var(--primary)/0.12)]" />
+          Personal planning studio
         </div>
-        <div className="flex flex-wrap items-center gap-2 self-start">
+        <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-self-end">
           <Button variant="outline" size="sm" onClick={() => setDarkMode((dark) => !dark)} aria-label={darkMode ? "Switch to light theme" : "Switch to dark theme"} title={darkMode ? "Switch to light theme" : "Switch to dark theme"}>{darkMode ? <Sun className="size-4" /> : <Moon className="size-4" />}<span className="hidden sm:inline">{darkMode ? "Light" : "Dark"} mode</span></Button>
-          <Button variant="outline" size="sm" onClick={reset} disabled={running}><RotateCcw className="size-4" />Reset demo</Button>
-          <Button size="sm" onClick={loadDemo} disabled={running} className="bg-primary text-primary-foreground hover:bg-primary/90"><Sparkles className="size-4" />Try the demo</Button>
+          <Button variant="outline" size="sm" onClick={reset} disabled={running}><RotateCcw className="size-4" /><span className="hidden sm:inline">Reset</span></Button>
+          <Button size="sm" onClick={loadDemo} disabled={running} className="bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"><Sparkles className="size-4" />Try demo</Button>
         </div>
       </header>
 
