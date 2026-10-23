@@ -121,7 +121,7 @@ function Index() {
     <div className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
       <header className="mb-9 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-gradient-accent text-primary-foreground shadow-glow">
+          <span className="grid size-9 place-items-center rounded-lg bg-primary text-primary-foreground">
             <Navigation className="size-4.5" aria-hidden />
           </span>
           <div>
@@ -131,11 +131,11 @@ function Index() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={reset} disabled={running}><RotateCcw className="size-4" />Reset demo</Button>
-          <Button size="sm" onClick={loadDemo} disabled={running} className="bg-gradient-accent shadow-glow"><Sparkles className="size-4" />Try the demo</Button>
+          <Button size="sm" onClick={loadDemo} disabled={running} className="bg-primary text-primary-foreground hover:bg-primary/90"><Sparkles className="size-4" />Try the demo</Button>
         </div>
       </header>
 
-      <section className="daypilot-hero mb-7 overflow-hidden rounded-[2rem] border p-5 sm:p-8">
+      <section className="daypilot-hero mb-7 overflow-hidden border p-5 sm:p-8">
         <p className="text-sm font-medium text-muted-foreground" suppressHydrationWarning>
           {now ? now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" }) + " · " + now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "\u00a0"}
         </p>
@@ -161,10 +161,10 @@ function Index() {
             />
           )}
           {!plan && activity.length === 0 && (
-            <button onClick={() => ask(DEMO_PROMPT)} className="glass-card w-full p-5 text-left transition hover:border-primary/40">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Sample request</p>
+            <button onClick={() => ask(DEMO_PROMPT)} className="glass-card w-full p-5 text-left transition-colors hover:border-primary/45 hover:bg-card">
+              <p className="text-xs font-semibold tracking-wide text-primary">Try a sample</p>
               <p className="mt-1 font-display text-lg">"{DEMO_PROMPT}"</p>
-              <p className="mt-2 text-sm text-muted-foreground">Click to generate a plan →</p>
+              <p className="mt-2 text-sm text-muted-foreground">Select to preview the steps before running them →</p>
             </button>
           )}
           <ActivityTimeline entries={activity} />
