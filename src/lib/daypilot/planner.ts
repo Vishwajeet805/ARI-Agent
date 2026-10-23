@@ -70,7 +70,7 @@ function parseItems(clause: string): string[] | undefined {
 function classify(clause: string): ToolArgs | null {
   const c = clause.toLowerCase();
 
-  if (/\b(grocery|groceries|shopping\s+list|ingredients|buy)\b/.test(c)) {
+  if (/\b(grocery|groceries|shopping\s+list|ingredients)\b/.test(c)) {
     const servings = servingsIn(clause);
     const meal = /\bdinner\b/.test(c) ? "Dinner" : /\blunch\b/.test(c) ? "Lunch" : "Groceries";
     return { tool: "createShoppingList", title: `${meal} for ${servings}`, servings, items: parseItems(clause) ?? [...DEFAULT_DINNER_ITEMS] };
