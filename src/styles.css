@@ -156,3 +156,36 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+
+/* DayPilot interface polish: subtle depth, clearer hierarchy, and touch-friendly focus. */
+.daypilot-shell {
+  isolation: isolate;
+}
+.daypilot-hero {
+  position: relative;
+  border-color: color-mix(in oklab, var(--primary) 16%, var(--border));
+  background:
+    radial-gradient(36rem 18rem at 92% 0%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 68%),
+    linear-gradient(145deg, color-mix(in oklab, var(--card) 96%, white), color-mix(in oklab, var(--primary-soft) 28%, var(--card)));
+  box-shadow: var(--shadow-card);
+}
+.glass-card {
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+.glass-card:focus-within {
+  border-color: color-mix(in oklab, var(--primary) 42%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 12%, transparent), var(--shadow-card);
+}
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .glass-card:hover {
+    border-color: color-mix(in oklab, var(--primary) 24%, var(--border));
+  }
+}
