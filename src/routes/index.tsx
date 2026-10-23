@@ -165,6 +165,8 @@ function Index() {
             tasks={state.tasks}
             onToggle={(id) => upd((s) => ({ ...s, tasks: s.tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) }))}
             onRemove={(id) => upd((s) => ({ ...s, tasks: s.tasks.filter((t) => t.id !== id) }))}
+            onAdd={(title, minutes) => upd((s) => ({ ...s, tasks: [{ id: uid(), title, minutes, done: false, source: "user" }, ...s.tasks] }))}
+            onEdit={(id, title, minutes) => upd((s) => ({ ...s, tasks: s.tasks.map((t) => t.id === id ? { ...t, title, minutes } : t) }))}
           />
           <GroceryCard
             title={state.groceryTitle} items={state.groceries}
