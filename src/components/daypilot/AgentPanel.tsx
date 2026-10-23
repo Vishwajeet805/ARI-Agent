@@ -62,7 +62,7 @@ export function Composer({ onSubmit, disabled }: { onSubmit: (text: string) => v
             className={cn(listening && "bg-accent text-primary")}>
             {speechOk ? <Mic className={cn("size-4", listening && "animate-pulse")} /> : <MicOff className="size-4" />}
           </Button>
-          <Button type="submit" size="icon" disabled={!text.trim() || disabled} aria-label="Send request" className="bg-gradient-accent shadow-glow">
+          <Button type="submit" size="icon" disabled={!text.trim() || disabled} aria-label="Send request" className="bg-primary text-primary-foreground hover:bg-primary/90">
             <ArrowUp className="size-4" />
           </Button>
         </div>
@@ -107,7 +107,7 @@ export function PlanPreview({
                   <Checkbox checked={s.enabled} onCheckedChange={() => onToggle(s.id)} disabled={running} aria-label={`Run step ${i + 1}`} />
                   <span className="text-xs font-semibold tabular-nums text-muted-foreground">{i + 1}</span>
                   <Input value={s.title} disabled={running} onChange={(e) => onEditTitle(s.id, e.target.value)} aria-label={`Step ${i + 1} title`} className="h-8 border-transparent bg-transparent px-1 font-medium shadow-none hover:border-input" />
-                  <code className="hidden shrink-0 rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground sm:inline">{s.args.tool}()</code>
+                  <span className="hidden shrink-0 rounded-md bg-primary-soft px-2 py-1 text-[11px] font-medium text-primary sm:inline">{s.args.tool === "addTask" ? "Task" : s.args.tool === "createShoppingList" ? "Shopping list" : "Break"}</span>
                 </div>
                 <p className="ml-14 mt-1 text-xs text-muted-foreground">{s.rationale}</p>
               </li>
