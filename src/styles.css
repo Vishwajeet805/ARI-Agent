@@ -257,3 +257,42 @@ textarea:focus-visible {
 .dark .glass-card { background: color-mix(in oklab, var(--card) 92%, transparent); }
 .dark input, .dark textarea, .dark select { color: var(--foreground); }
 .dark ::selection { background: color-mix(in oklab, var(--primary) 42%, transparent); }
+
+/* Ari welcome / landing experience */
+.ari-landing {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(46rem 34rem at 78% 35%, color-mix(in oklab, var(--primary) 13%, transparent), transparent 68%),
+    radial-gradient(35rem 28rem at 8% 88%, color-mix(in oklab, var(--cobalt) 10%, transparent), transparent 70%),
+    var(--background);
+}
+.ari-landing-noise {
+  position: absolute; inset: 0; pointer-events: none; opacity: .2;
+  background-image: radial-gradient(var(--muted-foreground) .55px, transparent .55px);
+  background-size: 18px 18px; mask-image: linear-gradient(to bottom, black, transparent 75%);
+}
+.ari-landing-accent {
+  background: linear-gradient(110deg, var(--primary), color-mix(in oklab, var(--cobalt) 80%, var(--primary)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.ari-preview-card {
+  border-color: color-mix(in oklab, var(--primary) 20%, var(--border));
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  backdrop-filter: blur(18px);
+}
+.ari-orbit { position:absolute; border:1px solid color-mix(in oklab, var(--primary) 20%, transparent); border-radius:50%; pointer-events:none; }
+.ari-orbit-one { width: 112%; aspect-ratio:1; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-18deg); }
+.ari-orbit-two { width: 126%; aspect-ratio:1; top:50%; left:50%; transform:translate(-50%,-50%) rotate(28deg); border-style:dashed; opacity:.45; }
+.ari-floating-note { background:var(--card); border-color:var(--border); }
+.ari-feature { padding: 1rem 1.1rem; border-radius:1rem; background:color-mix(in oklab,var(--card) 65%,transparent); border:1px solid color-mix(in oklab,var(--border) 70%,transparent); }
+.ari-feature-number { display:inline-block; margin-bottom:.8rem; color:var(--primary); font-size:.68rem; font-weight:800; letter-spacing:.14em; }
+.ari-feature h3 { font-size:.92rem; font-weight:700; letter-spacing:-.02em; }
+.ari-feature p { margin-top:.4rem; color:var(--muted-foreground); font-size:.78rem; line-height:1.6; }
+@media (max-width: 640px) {
+  .ari-landing { padding-inline:1rem; }
+  .ari-orbit { display:none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ari-landing .animate-rise { animation:none; }
+}
