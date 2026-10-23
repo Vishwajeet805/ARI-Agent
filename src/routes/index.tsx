@@ -7,7 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ActivityTimeline, Composer, PlanPreview } from "@/components/daypilot/AgentPanel";
 import { BreakCard, GroceryCard, SummaryStrip, TasksCard } from "@/components/daypilot/Widgets";
 import { DEMO_PROMPT, planRequest } from "@/lib/daypilot/planner";
-import { describeInput, runTool, seedState } from "@/lib/daypilot/tools";
+import { describeInput, restoreState, runTool, seedState } from "@/lib/daypilot/tools";
 import type { ActivityEntry, AppState, Plan } from "@/lib/daypilot/types";
 
 export const Route = createFileRoute("/")({
@@ -52,12 +52,17 @@ function Index() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setState(JSON.parse(raw));
-    } catch { /* ignore corrupt storage */ }
+      setState(restoreState(localStorage.getItem(KEY)));
+    } catch {
+      setState(seedState());
+    }
     setLoaded(true);
   }, []);
-  useEffect(() => { if (loaded) localStorage.setItem(KEY, JSON.stringify(state)); }, [state, loaded]);
+  useEffect(() => {
+    if (!loaded) return;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch { toast.error("Couldn't save in this browser. Your current changes may not persist after refresh."); }
+  }, [state, loaded]);
 
   const ask = (text: string) => { setActivity([]); setPlan(planRequest(text)); };
 
