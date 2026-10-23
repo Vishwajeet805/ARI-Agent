@@ -44,6 +44,18 @@ function Index() {
   const [state, setState] = useState<AppState>(() => seedState());
   const [loaded, setLoaded] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
+  const [landingExiting, setLandingExiting] = useState(false);
+  const [studioEntering, setStudioEntering] = useState(false);
+  const openStudio = () => {
+    if (landingExiting) return;
+    setLandingExiting(true);
+    window.setTimeout(() => {
+      setShowLanding(false);
+      setStudioEntering(true);
+      window.scrollTo({ top: 0, behavior: "instant" });
+      window.setTimeout(() => setStudioEntering(false), 780);
+    }, 680);
+  };
   const [plan, setPlan] = useState<Plan | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [running, setRunning] = useState(false);
@@ -129,7 +141,7 @@ function Index() {
 
   if (showLanding) {
     return (
-      <main className="ari-landing min-h-screen overflow-hidden px-5 py-5 sm:px-8 lg:px-12">
+      <main className={`ari-landing min-h-screen overflow-hidden px-5 py-5 sm:px-8 lg:px-12${landingExiting ? " ari-landing-exit" : ""}`}>
         <div className="ari-landing-noise" aria-hidden="true" />
         <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between">
           <a href="#welcome" className="flex items-center gap-3" aria-label="Ari welcome">
@@ -150,7 +162,7 @@ function Index() {
             <h1 className="max-w-2xl font-display text-[3.45rem] font-medium leading-[0.99] tracking-[-0.065em] sm:text-6xl lg:text-[5.2rem]">Less juggling.<br /><span className="ari-landing-accent">More living.</span></h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">Give your everyday to-dos a little structure. Ari turns requests into clear, editable plans for tasks, shopping, and breaks—then lets you choose what to run.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button size="lg" onClick={() => { setShowLanding(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="group h-12 rounded-full px-6 text-sm font-semibold shadow-glow">
+              <Button size="lg" onClick={openStudio} className="group h-12 rounded-full px-6 text-sm font-semibold shadow-glow">
                 Open Ari <span className="ml-2 transition-transform group-hover:translate-x-1">↗</span>
               </Button>
               <a href="#landing-details" className="inline-flex h-12 items-center justify-center rounded-full px-5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">Take a quick look <span className="ml-2">↓</span></a>
@@ -193,7 +205,7 @@ function Index() {
   }
 
   return (
-    <div id="top" className="daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8">
+    <div id="top" className={`daypilot-shell mx-auto max-w-7xl px-4 pb-16 pt-5 sm:px-6 lg:px-8${studioEntering ? " ari-studio-enter" : ""}`}>
       <header className="ari-navbar mb-9 grid grid-cols-1 items-center gap-4 rounded-2xl border px-4 py-3.5 sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:gap-5">
         <a href="#top" className="group flex items-center gap-3 justify-self-center lg:justify-self-start" aria-label="Ari home">
           <span className="ari-brand-mark grid size-11 place-items-center rounded-[14px] sm:size-12" aria-hidden="true">
